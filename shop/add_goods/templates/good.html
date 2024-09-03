@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} {{ good.title }} {% endblock %}
+{% block content %}
+<div class="good_h_wr">
+    <div class="left_h_wr">
+        <div class="good_h_title">
+            {{ good.title }}
+        </div>
+        <img class="good_h_image" src="{{ good.image.url }}" alt="">
+    </div>
+    <div class="right_h_wr">
+        <div class="good_h_description">
+            {{ good.description }}
+        </div>
+        <div class="good_h_price">
+            {{ good.formatted_price }} руб.
+        </div>
+        <div class="good_h_cart">
+            <form class="form_button" action="{% url 'add_to_cart' good.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="in_basket_b in_basket_b_h {% if good.id in cart %} already_in_cart {% endif %}" data-good-id="{{ good.id }}">
+                    {% if good.id not in cart %}
+                        В корзину 
+                    {% else %}
+                        Уже в корзине
+                        <img class="button_image" src="{% static 'images/double-tick.png' %}">
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

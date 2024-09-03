@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %} Войти {% endblock %}
+{% load static %}
+{% block content %}
+<form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <div class="login_wr">
+        <div class="login_name">
+            Вход
+        </div>
+        {% if form.errors %}
+            <div class="errorlist">
+                <div class="errorlist_inc">
+                    Вы ввели неверный логин и/или пароль
+                </div>
+            </div>
+        {% endif %}
+        <div class="login_wrapper">
+            <div class="login_title login_correct">
+                Логин
+            </div>
+            <div class="inp_login">
+                {{ form.username }}
+            </div>
+        </div>
+        <div class="login_wrapper">
+            <div class="login_title">
+                Пароль
+            </div>
+            <div class="inp_login">
+                {{ form.password }}
+            </div>
+        </div>
+        <div id="buttonContainerId">
+
+        </div>
+        <div class="login_wrapper corr_enter">   
+            <input class="inp_login_us" type="submit" value="Войти" />
+            <input type="hidden" name="next" value="{{ next }}" />
+        </div>
+        <a class="forget_pass_a" href="{% url 'password_reset' %}">Забыли пароль?</a>
+        <a class="forget_pass_a" href="{% url 'registration_register' %}">Зарегистрироваться</a>
+    </div>
+</form>
+<a class="yandex_auth_wr" href="https://oauth.yandex.ru/authorize?response_type=code&client_id=5f7d4dec0c084cb380daadfdf7e2771e&redirect_uri=https://d28f-178-120-67-229.ngrok-free.app/suggest/token"> 
+    <div class="yandex_auth">
+        <span class="yandex_auth_a" >Войти через Яндекс</span>
+        <img src="{% static 'images/yandex_icon.png' %}" alt="" class="yandex_auth_img">
+    </div>
+</a>
+<!-- <script>
+    window.onload = function() {
+    window.YaAuthSuggest.init(
+{
+    client_id: '5f7d4dec0c084cb380daadfdf7e2771e',
+    response_type: 'token',
+    redirect_uri: 'https://d28f-178-120-67-229.ngrok-free.app/suggest/token'
+},
+'https://d28f-178-120-67-229.ngrok-free.app',
+{
+  view: "button",
+  parentId: "buttonContainerId1",
+  buttonSize: 'm',
+  buttonView: 'main',
+  buttonTheme: 'light',
+  buttonBorderRadius: "0",
+  buttonIcon: 'ya',
+}
+)
+.then(({handler}) => handler())
+.then(data => console.log('Сообщение с токеном', data))
+.catch(error => console.log('Обработка ошибки', error))
+};
+</script> -->
+{% endblock %}

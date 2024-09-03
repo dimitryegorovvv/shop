@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load math_filters %}
+{% block title %} Корзина {% endblock %}
+{% block content %}
+<div class="wrapper_cart">
+    <div class="good_in_cart_wrapper">
+        <div class="cart_text">
+            Ваша корзина:
+        </div>
+        {% for good in goods %}
+            {% if good.id in cart %}
+            <div class="good_in_cart">
+                <img class="img_good_cart" src="{{ good.image.url }}" alt="" >
+                <div class="cart_good_right">
+                    <div class="title_quan_del_wr">
+                        <a class="title_quan_del_wr" href="{% url 'good' good.id %}">{{ good.title }}</a>
+                    </div>
+                    <div class="quantity_del_cart">
+                        {% for key, value in cart.items %}
+                            {% if good.id == key %}
+                                <input class="good_quantity" type="number" min="1" value="{{ value }}" data-good-id="{{ good.id }}">
+                        {% csrf_token %}
+                        <form class="form_del_good_cart" action="{% url 'add_to_cart' good.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn_del_good_cart" data-good-id="{{ good.id }}">
+                                <img class="img_good_in_cart" src="{% static 'images/bin.png' %}" alt="">
+                            </button>
+                        </form>
+                    </div>
+                    <div class="good_price_cart">
+                        {{ good.formatted_price|multiply:value }} руб.
+                    </div>
+                            {% endif %}
+                        {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="result_cart">
+        <div class="price_cart_wr">
+            <div class="result_price_cart">
+                Итоговая стоимость: 
+            </div>
+            <div class="result_price_wr">
+                <div class="result_price_cart_n">
+                    {% if result_price %} {{ result_price }} {% else %} 0 {% endif %}
+                </div>
+                <div class="result_price_cart_r">
+                    &nbsp;руб.
+                </div>
+            </div>
+        </div>
+        <div class="result_cart_wr">
+            <div class="result_quantity_cart">
+                Итоговое количество товаров:
+            </div>
+            <div class="result_quantity_cart_n">
+                {% if quantity_sum %} {{ quantity_sum }} {% else %} 0 {% endif %}
+            </div>
+        </div>
+        <div class="checkout_cart_wr">
+            <div class="checkout_cart">
+                Оформить заказ
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

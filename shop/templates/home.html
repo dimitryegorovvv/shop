@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} {% if name_of_category_rus %} {{ name_of_category_rus }} {% else %} Главная {% endif %} {% endblock %}
+{% block content %}
+    <a href="{% url 'create_payment' %}">Заплатить</a>
+    <div class="sort">
+        <div class="btn_sort"><button onclick="show_hide_sort_menu()">Сортировать по:</button></div>
+        <div class="sort_by_wr">
+            <div><a href="?order=-popularity" class="sort_by">Популярные</a></div>
+            <div><a href="?order=price" class="sort_by">Дешёвые</a></div>
+            <div><a href="?order=-price" class="sort_by">Дорогие</a></div>
+        </div>
+    </div>
+    <div class="categories">
+        <a class="category" href="{% url 'category' 'laptops' %}">Ноутбуки</a>
+        <a class="category" href="{% url 'category' 'smart-watches' %}">Смарт-часы</a>
+        <a class="category" href="{% url 'category' 'TV' %}">Телевизоры</a>
+    </div>
+    <div id="main_wrapper">
+        {% for good in goods %}
+        <div class="goods">
+            <div class="title_of_good">
+                <a class="title_of_good_a" href="{% url 'good' good.id %}">{{ good.title }}</a>
+            </div>
+            <div class="image_of_good">
+                <img class="img_image_of_good lazy_img" data-src="{{ good.image.url }}" alt="" >
+            </div>
+            <div class="price_and_in_basket">
+                <div class="price_of_good">
+                    {{ good.formatted_price }}
+                    руб.
+                </div>
+                <div class="in_basket">
+                    <form class="form_button" action="{% url 'add_to_cart' good.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="in_basket_b {% if good.id in cart %} already_in_cart {% endif %}" data-good-id="{{ good.id }}">
+                            {% if good.id not in cart %}
+                                В корзину 
+                            {% else %}
+                                Уже в корзине
+                                <img class="button_image" src="{% static 'images/double-tick.png' %}">
+                            {% endif %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% if goods.has_next or goods.has_previous %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if goods.has_previous %}
+                <a class="first_page" href="?page=1{% if request.GET.order %}&order={{ request.GET.order }}{% endif %}">первая</a>
+                <a href="?page={{ goods.previous_page_number }}{% if request.GET.order %}&order={{ request.GET.order }}{% endif %}">предыдущая</a>
+                {% for num in goods.paginator.page_range %}
+                    {% if num < goods.number and num >= goods.number|add:-4 %}
+                        <a href="?page={{ num }}{% if request.GET.order %}&order={{ request.GET.order }}{% endif %}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+    
+            <a class="current">
+                {{ goods.number }}
+            </a>
+    
+            {% if goods.has_next %}
+                {% for num in goods.paginator.page_range %}
+                    {% if num > goods.number and num <= goods.number|add:4 %}
+                        <a href="?page={{ num }}{% if request.GET.order %}&order={{ request.GET.order }}{% endif %}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+                <a href="?page={{ goods.next_page_number }}{% if request.GET.order %}&order={{ request.GET.order }}{% endif %}">следующая</a>
+                <a class="last_page" href="?page={{ goods.paginator.num_pages }}{% if request.GET.order %}&order={{ request.GET.order }}{% endif %}">последняя</a>
+            {% endif %}
+        </span>
+    </div>
+    {% endif %}
+{% endblock %}
