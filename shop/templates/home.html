@@ -2,7 +2,6 @@
 {% load static %}
 {% block title %} {% if name_of_category_rus %} {{ name_of_category_rus }} {% else %} Главная {% endif %} {% endblock %}
 {% block content %}
-    <a href="{% url 'create_payment' %}">Заплатить</a>
     <div class="sort">
         <div class="btn_sort"><button onclick="show_hide_sort_menu()">Сортировать по:</button></div>
         <div class="sort_by_wr">
